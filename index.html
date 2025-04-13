@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🛡️ Scam Sniper</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">🛡️ Scam Sniper</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#tool">Try It</a></li>
+      <li><a href="#coming-soon">Coming Soon</a></li>
+    </ul>
+  </nav>
+
+  <header id="home" data-animate="fade-in">
+    <div class="container">
+      <h1>Scam Sniper</h1>
+      <p>Protecting you from online fraud and scams in real time.</p>
+      <a href="#tool" class="cta-button">Try Now</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="about" class="about" data-animate="slide-up">
+      <h2>What is Scam Sniper?</h2>
+      <p>
+        Scam Sniper is an AI-powered system that detects and prevents online scams like phishing websites, fake messages, and AI-generated frauds. Designed to protect beginners, elderly users, and rural internet users.
+      </p>
+    </section>
+
+    <section id="how-it-works" class="how-it-works" data-animate="slide-up">
+      <h2>🔍 How It Works</h2>
+      <ol>
+        <li>You enter a suspicious link or message.</li>
+        <li>Our System performs IP tracking, domain checks, and AI-based scam pattern detection.</li>
+        <li>Scam is flagged with a warning and fraud risk level.</li>
+        <li>Future versions: real-time alerts via browser plugin or mobile app.</li>
+      </ol>
+    </section>
+
+    <section id="tool" class="tool-prototype" data-animate="slide-up">
+      <h2>🧪 Try the Prototype</h2>
+      <p>Enter a suspicious website link:</p>
+      <div class="input-group">
+        <input type="text" id="linkInput" placeholder="https://example.com" />
+        <button onclick="checkScam()">Check Now</button>
+      </div>
+      <p id="result" class="result"></p>
+    </section>
+
+    <section id="coming-soon" class="coming-soon" data-animate="slide-up">
+      <h2>🚀 Coming Soon</h2>
+      <ul>
+        <li>AI-based link analysis and scam detection</li>
+        <li>Browser extension for real-time warnings</li>
+        <li>Mobile app with voice/video scam detection</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Scam Sniper Team. Stay alert. Stay safe.</p>
+  </footer>
+</body>
+</html>
