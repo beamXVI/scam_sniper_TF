@@ -16,10 +16,12 @@
       <li><a href="#how-it-works">How It Works</a></li>
       <li><a href="#tool">Try It</a></li>
       <li><a href="#coming-soon">Coming Soon</a></li>
+      <li><button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">🌙</button></li>
     </ul>
   </nav>
 
   <header id="home" data-animate="fade-in">
+    <div class="hero-bg"></div>
     <div class="container">
       <h1>Scam Sniper</h1>
       <p>Protecting you from online fraud and scams in real time.</p>
@@ -50,17 +52,27 @@
       <p>Enter a suspicious website link:</p>
       <div class="input-group">
         <input type="text" id="linkInput" placeholder="https://example.com" />
-        <button onclick="checkScam()">Check Now</button>
+        <button id="checkButton" onclick="checkScam()">Check Now</button>
       </div>
+      <div id="spinner" class="spinner hidden"></div>
       <p id="result" class="result"></p>
     </section>
 
     <section id="coming-soon" class="coming-soon" data-animate="slide-up">
       <h2>🚀 Coming Soon</h2>
-      <ul>
-        <li>AI-based link analysis and scam detection</li>
-        <li>Browser extension for real-time warnings</li>
-        <li>Mobile app with voice/video scam detection</li>
+      <ul class="feature-list">
+        <li>
+          <img loading="lazy" src="https://via.placeholder.com/50" alt="AI Analysis" />
+          AI-based link analysis and scam detection
+        </li>
+        <li>
+          <img loading="lazy" src="https://via.placeholder.com/50" alt="Browser Extension" />
+          Browser extension for real-time warnings
+        </li>
+        <li>
+          <img loading="lazy" src="https://via.placeholder.com/50" alt="Mobile App" />
+          Mobile app with voice/video scam detection
+        </li>
       </ul>
     </section>
   </main>
