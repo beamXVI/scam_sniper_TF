@@ -1,84 +1,114 @@
-<!DOCTYPE html>
-<html lang="en">
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🛡️ Scam Sniper</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
-  <script defer src="script.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scam Sniper | AI Anti-Fraud Tool</title>
+  <style>
+    /* Fallback font */
+    body { font-family: system-ui, -apple-system, Arial, sans-serif; }
+  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <script defer src="{{ url_for('static', filename='script.js') }}"></script>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="logo">🛡️ Scam Sniper</div>
-    <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#how-it-works">How It Works</a></li>
-      <li><a href="#tool">Try It</a></li>
-      <li><a href="#coming-soon">Coming Soon</a></li>
-      <li><button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">🌙</button></li>
-    </ul>
-  </nav>
-
-  <header id="home" data-animate="fade-in">
-    <div class="hero-bg"></div>
-    <div class="container">
-      <h1>Scam Sniper</h1>
-      <p>Protecting you from online fraud and scams in real time.</p>
-      <a href="#tool" class="cta-button">Try Now</a>
+  <div id="ambientOrbs" aria-hidden="true"></div>
+  <header class="hero reveal" role="banner">
+    <canvas id="particleCanvas" aria-hidden="true"></canvas>
+    <div class="theme-toggle">
+      <button id="themeToggle" aria-label="Switch to light mode">🌙</button>
+    </div>
+    <div class="live-clock" aria-live="polite">
+      <span id="liveClock"></span>
+    </div>
+    <div class="hero-content">
+      <h1>🛡️ Scam Sniper</h1>
+      <p>Detect scam & phishing links before they trick you.</p>
+      <div class="input-group hero-input" role="search">
+        <input type="text" id="linkInput" placeholder="Paste a URL to scan..." aria-label="Enter URL to scan" />
+        <button class="scan-button" onclick="checkScam()" aria-label="Start scan">Scan Now</button>
+      </div>
+      <div id="loading" class="loading hidden" aria-live="polite">Scanning...</div>
+      <div id="result" class="result card scan-reveal" aria-live="polite" role="region">
+        <canvas id="glitterCanvas" aria-hidden="true"></canvas>
+      </div>
     </div>
   </header>
 
-  <main class="container">
-    <section id="about" class="about" data-animate="slide-up">
-      <h2>What is Scam Sniper?</h2>
+  <main role="main">
+    <section class="intro reveal">
+      <h2>📌 About Scam Sniper</h2>
       <p>
-        Scam Sniper is an AI-powered system that detects and prevents online scams like phishing websites, fake messages, and AI-generated frauds. Designed to protect beginners, elderly users, and rural internet users.
+        Scam Sniper helps users instantly scan suspicious websites and detect scams using IP tracking, fraud databases, and AI logic.
+        It's lightweight, fast, and perfect for beginners and experts alike.
       </p>
     </section>
 
-    <section id="how-it-works" class="how-it-works" data-animate="slide-up">
+    <section class="how-it-works reveal">
       <h2>🔍 How It Works</h2>
-      <ol>
-        <li>You enter a suspicious link or message.</li>
-        <li>Our System performs IP tracking, domain checks, and AI-based scam pattern detection.</li>
-        <li>Scam is flagged with a warning and fraud risk level.</li>
-        <li>Future versions: real-time alerts via browser plugin or mobile app.</li>
-      </ol>
-    </section>
-
-    <section id="tool" class="tool-prototype" data-animate="slide-up">
-      <h2>🧪 Try the Prototype</h2>
-      <p>Enter a suspicious website link:</p>
-      <div class="input-group">
-        <input type="text" id="linkInput" placeholder="https://example.com" />
-        <button id="checkButton" onclick="checkScam()">Check Now</button>
+      <div class="steps-grid">
+        <div class="step"><span class="step-number">1</span><p>Paste a link.</p></div>
+        <div class="step"><span class="step-number">2</span><p>AI scans it.</p></div>
+        <div class="step"><span class="step-number">3</span><p>Get insights.</p></div>
       </div>
-      <div id="spinner" class="spinner hidden"></div>
-      <p id="result" class="result"></p>
     </section>
 
-    <section id="coming-soon" class="coming-soon" data-animate="slide-up">
+    <section class="history reveal">
+      <h2>📜 Scan History</h2>
+      <div id="historyList" class="history-list" aria-live="polite"></div>
+    </section>
+
+    <section class="coming-soon reveal">
       <h2>🚀 Coming Soon</h2>
-      <ul class="feature-list">
-        <li>
-          <img loading="lazy" src="https://via.placeholder.com/50" alt="AI Analysis" />
-          AI-based link analysis and scam detection
-        </li>
-        <li>
-          <img loading="lazy" src="https://via.placeholder.com/50" alt="Browser Extension" />
-          Browser extension for real-time warnings
-        </li>
-        <li>
-          <img loading="lazy" src="https://via.placeholder.com/50" alt="Mobile App" />
-          Mobile app with voice/video scam detection
-        </li>
+      <ul class="features-list">
+        <li><strong>Real-time Scam API:</strong> Integrate fraud detection into your apps.</li>
+        <li><strong>Deepfake Detection:</strong> Spot AI-generated scams with precision.</li>
+        <li><strong>Chatbot Protection:</strong> Secure your chats from malicious bots.</li>
       </ul>
     </section>
   </main>
 
-  <footer>
-    <p>© 2025 Scam Sniper Team. Stay alert. Stay safe.</p>
+  <footer class="reveal" role="contentinfo">
+    <p>© 2025 Hacksmiths United. Built to protect.</p>
   </footer>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93be43843b5ebfe5',t:'MTc0NjU5NTE4MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
